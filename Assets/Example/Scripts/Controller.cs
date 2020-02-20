@@ -16,7 +16,7 @@ namespace Example
         public KeyCode ClearAllTubesKey;
     }
 
-    [RequireComponent(typeof(Tube))]
+    [RequireComponent(typeof(TubeGenerator))]
     public class Controller : MonoBehaviour
     {
         [SerializeField]
@@ -51,9 +51,15 @@ namespace Example
             ClearAllTubesKey = KeyCode.Delete
         };
 
+        [SerializeField]
+        private float tubeRadius = 0.5f;
+
+        [SerializeField]
+        private Material tubeMaterial;
+
         private float StartY { get; set; } = 0f;
 
-        private Tube MyTube { get; set; }
+        private TubeGenerator MyTubeGenerator { get; set; }
 
         private bool OnGround { get; set; } = true;
         private int VerticalMovementDirection { get; set; } = 0;   //-1: Going Down, 1: Going Up 0: Not Moving Vertically
@@ -61,16 +67,16 @@ namespace Example
 
         private void Awake()
         {
-            if (MyTube == null)
+            if (MyTubeGenerator == null)
             {
-                MyTube = GetComponent<Tube>();
+                MyTubeGenerator = GetComponent<TubeGenerator>();
             }
         }
 
         private void Start()
         {
             StartY = transform.position.y;
-            MyTube.StartTube();
+            MyTubeGenerator.StartTube(tubeRadius, tubeMaterial);
 
 
         }
@@ -106,17 +112,17 @@ namespace Example
 
             if (Input.GetKey(Controls.CloseTubeKey))
             {
-                MyTube.CloseTube();
+                MyTubeGenerator.CloseTube();
             }
 
             if (Input.GetKey(Controls.StartTubeKey))
             {
-                MyTube.StartTube();
+                MyTubeGenerator.StartTube(tubeRadius, tubeMaterial);
             }
 
             if (Input.GetKey(Controls.ClearAllTubesKey))
             {
-                MyTube.ClearTubes();
+                MyTubeGenerator.ClearTubes();
             }
 
         }
