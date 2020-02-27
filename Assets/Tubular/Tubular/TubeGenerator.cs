@@ -1,15 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections;
 
 namespace Tubular
 {
+
     /// <summary>
     /// TubeGenerator will create tubes following a Transform :)
     /// </summary>
     public class TubeGenerator : MonoBehaviour
     {
-        
+
         TubeConfig Config = new TubeConfig
         {
             VertsPerLoop = 25,
@@ -23,12 +25,12 @@ namespace Tubular
         private GameObject CurrentSegment { get; set; }
         private float currentSegmentLength;
 
-        private GameObject TubeFrontSphere { get; set; }               
+        private GameObject TubeFrontSphere { get; set; }
         private GameObject CurrentTubeParent;
 
         private List<GameObject> Tubes { get; set; } = new List<GameObject>();
-        public ReadOnlyCollection<GameObject> ReadOnlyTubes => Tubes.AsReadOnly(); 
-        
+        public ReadOnlyCollection<GameObject> ReadOnlyTubes => Tubes.AsReadOnly();
+
         private Mesh Mesh { get; set; }
         private Vector4[] LoopVerts { get; set; }
 
@@ -41,22 +43,21 @@ namespace Tubular
         private Vector3 PrevPos { get; set; }
         private Vector3 PrevVelocity { get; set; }
 
-        
+
         private Vector3 VelocityVector => PrevPos == PlayerTransform.position ? PlayerTransform.forward : (PlayerTransform.position - PrevPos).normalized;
         private Vector3 UpVector => Vector3.Cross(VelocityVector, transform.right);
         private Matrix4x4 LoopOrientMatrix => Matrix4x4.TRS(PrevPos, Quaternion.LookRotation(VelocityVector, -UpVector), Vector3.one);
 
         private Transform playerTransform;
         private Transform PlayerTransform => (playerTransform == null) ? playerTransform = transform : playerTransform;
-        
+
 
         private void Awake()
         {
             Verts.Capacity = Config.VertsPerLoop * (int)(Config.SegmentLength / Config.DistanceBetweenLoops);
             Tris.Capacity = Verts.Capacity * 3;
             UVs.Capacity = Verts.Capacity;
-
-            LoopVerts = CalculateLoopVertices();
+            
         }
 
         private void Update()
@@ -75,10 +76,11 @@ namespace Tubular
                 return;
             Radius = radius;
             Material = material;
+            LoopVerts = CalculateLoopVertices();
             CurrentTubeParent = new GameObject();
             PrevPos = PlayerTransform.position;
             CreateEndCapSpheres(CurrentTubeParent);
-            LastLoopPos = PlayerTransform.position;          
+            LastLoopPos = PlayerTransform.position;
             StartTubeSegment();
         }
 
@@ -105,8 +107,8 @@ namespace Tubular
 
         public void ClearTubeAtIndex(int index)
         {
-            if(index == Tubes.Count)
-                CloseTube( );
+            if (index == Tubes.Count)
+                CloseTube();
 
             Destroy(Tubes[index]);
             Tubes.RemoveAt(index);
@@ -148,7 +150,7 @@ namespace Tubular
             Verts.Clear();
             Tris.Clear();
             UVs.Clear();
-          
+
             CurrentSegment = new GameObject();
             CurrentSegment.AddComponent<MeshFilter>();
             CurrentSegment.AddComponent<MeshRenderer>();
@@ -186,7 +188,7 @@ namespace Tubular
             {
                 EndTubeSegment();
                 StartTubeSegment();
-            }                       
+            }
         }
 
         private void UpdateVertsAndUVs()
@@ -202,7 +204,7 @@ namespace Tubular
         }
 
         private void UpdateTriangles()
-        {         
+        {
             int vertInd = (LoopCount - 1) * Config.VertsPerLoop;
             for (int i = 0; i < Config.VertsPerLoop - 1; i++)
             {
@@ -225,7 +227,12 @@ namespace Tubular
 
             Mesh.SetTriangles(Tris, 0);
             Mesh.RecalculateNormals();
+
+            
+
         }
+       
+
         #endregion
     }
 }
