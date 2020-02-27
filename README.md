@@ -1,6 +1,6 @@
 # Tubular
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/34dg89ZPg5U" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![Video link](https://img.youtube.com/vi/34dg89ZPg5U/0.jpg)](https://www.youtube.com/watch?v=34dg89ZPg5U)
 
 This Unity Package contains a tube generator which creates 3-dimensional trails following a moving transform which you can start, stop, and delete.
 
