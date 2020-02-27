@@ -1,39 +1,36 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections;
 
 namespace Tubular
 {
+
     /// <summary>
-    /// Tube will create a Tube :)
+    /// TubeGenerator will create tubes following a Transform :)
     /// </summary>
-    public class Tube : MonoBehaviour
+    public class TubeGenerator : MonoBehaviour
     {
 
-        const int VERTS_PER_LOOP = 25;
+        TubeConfig Config = new TubeConfig
+        {
+            VertsPerLoop = 25,
+            SegmentLength = 10,
+            DistanceBetweenLoops = 0.1f,
+        };
 
-        [SerializeField]
-        private float segmentLength = 10;
+        private float Radius { get; set; } = 0.5f;
+        private Material Material { get; set; }
+
         private GameObject CurrentSegment { get; set; }
         private float currentSegmentLength;
 
-        [SerializeField]
-        [Range(0.1f, 2.0f)]
-        private float distanceBetweenLoops = 0.1f;
-
-        [SerializeField]
-        private float tubeRadius = 0.5f;
-
-        [SerializeField]
-        private Material material;
-
-        private GameObject TubeFrontSphere { get; set; }       
-        
+        private GameObject TubeFrontSphere { get; set; }
         private GameObject CurrentTubeParent;
 
         private List<GameObject> Tubes { get; set; } = new List<GameObject>();
-        public ReadOnlyCollection<GameObject> ReadOnlyTubes => Tubes.AsReadOnly(); 
-        
+        public ReadOnlyCollection<GameObject> ReadOnlyTubes => Tubes.AsReadOnly();
+
         private Mesh Mesh { get; set; }
         private Vector4[] LoopVerts { get; set; }
 
@@ -46,22 +43,21 @@ namespace Tubular
         private Vector3 PrevPos { get; set; }
         private Vector3 PrevVelocity { get; set; }
 
-        
+
         private Vector3 VelocityVector => PrevPos == PlayerTransform.position ? PlayerTransform.forward : (PlayerTransform.position - PrevPos).normalized;
         private Vector3 UpVector => Vector3.Cross(VelocityVector, transform.right);
         private Matrix4x4 LoopOrientMatrix => Matrix4x4.TRS(PrevPos, Quaternion.LookRotation(VelocityVector, -UpVector), Vector3.one);
 
         private Transform playerTransform;
         private Transform PlayerTransform => (playerTransform == null) ? playerTransform = transform : playerTransform;
-        
+
 
         private void Awake()
         {
-            Verts.Capacity = VERTS_PER_LOOP * (int)(segmentLength / distanceBetweenLoops);
+            Verts.Capacity = Config.VertsPerLoop * (int)(Config.SegmentLength / Config.DistanceBetweenLoops);
             Tris.Capacity = Verts.Capacity * 3;
             UVs.Capacity = Verts.Capacity;
-
-            LoopVerts = CalculateLoopVertices();
+            
         }
 
         private void Update()
@@ -69,24 +65,22 @@ namespace Tubular
             if (CurrentSegment == null)
                 return;
 
-            if (Vector3.Distance(LastLoopPos, PlayerTransform.position) >= distanceBetweenLoops)
+            if (Vector3.Distance(LastLoopPos, PlayerTransform.position) >= Config.DistanceBetweenLoops)
                 AddLoop();
             PrevPos = PlayerTransform.position;
         }
 
-        public void StartTube()
+        public void StartTube(float radius, Material material)
         {
             if (CurrentSegment != null)
                 return;
-
+            Radius = radius;
+            Material = material;
+            LoopVerts = CalculateLoopVertices();
             CurrentTubeParent = new GameObject();
             PrevPos = PlayerTransform.position;
             CreateEndCapSpheres(CurrentTubeParent);
-
-            
             LastLoopPos = PlayerTransform.position;
-
-            
             StartTubeSegment();
         }
 
@@ -113,8 +107,8 @@ namespace Tubular
 
         public void ClearTubeAtIndex(int index)
         {
-            if(index == Tubes.Count)
-                CloseTube( );
+            if (index == Tubes.Count)
+                CloseTube();
 
             Destroy(Tubes[index]);
             Tubes.RemoveAt(index);
@@ -125,9 +119,9 @@ namespace Tubular
 
         private void CreateEndCapSpheres(GameObject currentTubeParent)
         {
-            TubeFrontSphere = CreateSphere(PlayerTransform.position, tubeRadius, material);
+            TubeFrontSphere = CreateSphere(PlayerTransform.position, Radius, Material);
             TubeFrontSphere.transform.SetParent(PlayerTransform);
-            GameObject TubeBackSphere = CreateSphere(PlayerTransform.position, tubeRadius, material);
+            GameObject TubeBackSphere = CreateSphere(PlayerTransform.position, Radius, Material);
             TubeBackSphere.transform.SetParent(currentTubeParent.transform);
         }
 
@@ -143,10 +137,10 @@ namespace Tubular
 
         private Vector4[] CalculateLoopVertices()
         {
-            Vector4[] loop = new Vector4[VERTS_PER_LOOP];
-            float radians = (360 / (VERTS_PER_LOOP - 1)) * Mathf.Deg2Rad;
+            Vector4[] loop = new Vector4[Config.VertsPerLoop];
+            float radians = (360 / (Config.VertsPerLoop - 1)) * Mathf.Deg2Rad;
             for (int i = 0; i < loop.Length; i++)
-                loop[i] = new Vector4(tubeRadius * Mathf.Sin(i * radians), tubeRadius * Mathf.Cos(i * radians), 0, 1);
+                loop[i] = new Vector4(Radius * Mathf.Sin(i * radians), Radius * Mathf.Cos(i * radians), 0, 1);
             return loop;
         }
 
@@ -156,14 +150,14 @@ namespace Tubular
             Verts.Clear();
             Tris.Clear();
             UVs.Clear();
-          
+
             CurrentSegment = new GameObject();
             CurrentSegment.AddComponent<MeshFilter>();
             CurrentSegment.AddComponent<MeshRenderer>();
 
             Mesh = CurrentSegment.GetComponent<MeshFilter>().mesh;
             Mesh.MarkDynamic();
-            CurrentSegment.GetComponent<Renderer>().material = material;
+            CurrentSegment.GetComponent<Renderer>().material = Material;
             Mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
             UpdateVertsAndUVs();
@@ -190,50 +184,55 @@ namespace Tubular
             LoopCount++;
             PrevVelocity = VelocityVector;
 
-            if (currentSegmentLength >= segmentLength)
+            if (currentSegmentLength >= Config.SegmentLength)
             {
                 EndTubeSegment();
                 StartTubeSegment();
-            }                       
+            }
         }
 
         private void UpdateVertsAndUVs()
         {
             Mesh.Clear();
-            for (int i = 0; i < VERTS_PER_LOOP; i++)
+            for (int i = 0; i < Config.VertsPerLoop; i++)
             {
                 Verts.Add(LoopOrientMatrix * LoopVerts[i]);
-                UVs.Add(new Vector2((float)i / (VERTS_PER_LOOP - 1), Mathf.Clamp01(currentSegmentLength / segmentLength)));
+                UVs.Add(new Vector2((float)i / (Config.VertsPerLoop - 1), Mathf.Clamp01(currentSegmentLength / Config.SegmentLength)));
             }
             Mesh.SetVertices(Verts);
             Mesh.SetUVs(0, UVs);
         }
 
         private void UpdateTriangles()
-        {         
-            int vertInd = (LoopCount - 1) * VERTS_PER_LOOP;
-            for (int i = 0; i < VERTS_PER_LOOP - 1; i++)
+        {
+            int vertInd = (LoopCount - 1) * Config.VertsPerLoop;
+            for (int i = 0; i < Config.VertsPerLoop - 1; i++)
             {
                 Tris.Add(vertInd);
-                Tris.Add(vertInd + VERTS_PER_LOOP);
-                Tris.Add(vertInd + VERTS_PER_LOOP + 1);
+                Tris.Add(vertInd + Config.VertsPerLoop);
+                Tris.Add(vertInd + Config.VertsPerLoop + 1);
                 Tris.Add(vertInd);
-                Tris.Add(vertInd + VERTS_PER_LOOP + 1);
+                Tris.Add(vertInd + Config.VertsPerLoop + 1);
                 Tris.Add(vertInd + 1);
                 vertInd++;
             }
 
             //seam triangles
             Tris.Add(vertInd);
-            Tris.Add(vertInd + VERTS_PER_LOOP);
+            Tris.Add(vertInd + Config.VertsPerLoop);
             Tris.Add(vertInd + 1);
             Tris.Add(vertInd);
             Tris.Add(vertInd + 1);
-            Tris.Add(vertInd - VERTS_PER_LOOP + 1);
+            Tris.Add(vertInd - Config.VertsPerLoop + 1);
 
             Mesh.SetTriangles(Tris, 0);
             Mesh.RecalculateNormals();
+
+            
+
         }
+       
+
         #endregion
     }
 }

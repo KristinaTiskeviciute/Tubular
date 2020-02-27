@@ -1,23 +1,28 @@
 ﻿using System.Collections;
 using UnityEngine;
-using Tubular;
+
 
 namespace Example
 {
+
     [System.Serializable]
-    struct InputControls
+    struct PlayerInputControls
     {
         public KeyCode LeftKey;
         public KeyCode RightKey;
         public KeyCode ForwardKey;
         public KeyCode JumpKey;
-        public KeyCode StartTubeKey;
-        public KeyCode CloseTubeKey;
-        public KeyCode ClearAllTubesKey;
     }
 
-    [RequireComponent(typeof(Tube))]
-    public class Controller : MonoBehaviour
+    internal enum VerticalMovementDirection
+    {
+        up,
+        down,
+        none,
+    }
+
+    
+    public class PlayerMovement : MonoBehaviour
     {
         [SerializeField]
         [Range(3f, 10.0f)]
@@ -28,7 +33,7 @@ namespace Example
         private float turnSpeed = 1f;
 
         [SerializeField]
-        private AnimationCurve jumpCurve;
+        private AnimationCurve jumpCurve = null;
 
         [SerializeField]
         private float jumpHeight = 3;
@@ -40,39 +45,22 @@ namespace Example
         private float jumpForwardSpeedModifier = 2.0f;
 
         [SerializeField]
-        private InputControls Controls = new InputControls
+        private PlayerInputControls Controls = new PlayerInputControls
         {
             LeftKey = KeyCode.LeftArrow,
             RightKey = KeyCode.RightArrow,
             ForwardKey = KeyCode.UpArrow,
             JumpKey = KeyCode.Space,
-            StartTubeKey = KeyCode.RightAlt,
-            CloseTubeKey = KeyCode.RightControl,
-            ClearAllTubesKey = KeyCode.Delete
         };
 
+        
         private float StartY { get; set; } = 0f;
-
-        private Tube MyTube { get; set; }
-
-        private bool OnGround { get; set; } = true;
-        private int VerticalMovementDirection { get; set; } = 0;   //-1: Going Down, 1: Going Up 0: Not Moving Vertically
-
+        private bool OnGround { get; set; } = true;    
+        private VerticalMovementDirection VerticalMoveDir { get; set; } = VerticalMovementDirection.none;
 
         private void Awake()
         {
-            if (MyTube == null)
-            {
-                MyTube = GetComponent<Tube>();
-            }
-        }
-
-        private void Start()
-        {
             StartY = transform.position.y;
-            MyTube.StartTube();
-
-
         }
 
         void Update()
@@ -97,40 +85,25 @@ namespace Example
                 transform.position = transform.position + (transform.forward * speed * Time.smoothDeltaTime);
             }
 
-
             if ((Input.GetKey(Controls.JumpKey)))
             {
                 if (OnGround)
+                {
                     Jump();
+                }                  
             }
-
-            if (Input.GetKey(Controls.CloseTubeKey))
-            {
-                MyTube.CloseTube();
-            }
-
-            if (Input.GetKey(Controls.StartTubeKey))
-            {
-                MyTube.StartTube();
-            }
-
-            if (Input.GetKey(Controls.ClearAllTubesKey))
-            {
-                MyTube.ClearTubes();
-            }
-
         }
 
         public void Jump()
         {
-            VerticalMovementDirection = 1;
+            VerticalMoveDir = VerticalMovementDirection.up;
             OnGround = false;
             StartCoroutine(CurveInterp(Vector3.zero, new Vector3(0, jumpHeight, 0), jumpDuration, jumpCurve));
         }
 
         private void Land()
         {
-            VerticalMovementDirection = -1;
+            VerticalMoveDir = VerticalMovementDirection.down;
             StartCoroutine(CurveInterp(Vector3.zero, new Vector3(0, -jumpHeight, 0), jumpDuration, jumpCurve));
         }
 
@@ -149,29 +122,31 @@ namespace Example
                 transform.Translate(targetPos - prevPos, Space.Self);
                 prevPos = targetPos;
                 timer += Time.smoothDeltaTime;
-                forwardSpeed = (VerticalMovementDirection == 1) ? Mathf.Lerp(speed, speed * jumpForwardSpeedModifier, timer / duration) : Mathf.Lerp(speed * jumpForwardSpeedModifier, speed, timer / duration);
+                forwardSpeed = (VerticalMoveDir == VerticalMovementDirection.up) ? Mathf.Lerp(speed, speed * jumpForwardSpeedModifier, timer / duration) : Mathf.Lerp(speed * jumpForwardSpeedModifier, speed, timer / duration);
                 transform.position = transform.position + (transform.forward * forwardSpeed * Time.smoothDeltaTime);
+                    
                 yield return null;
             }
 
-            if (VerticalMovementDirection == -1) // Going Down
+            if (VerticalMoveDir == VerticalMovementDirection.down)
             {
                 transform.position = new Vector3(transform.position.x, StartY, transform.position.z);
                 OnGround = true;
             }
+           
 
-
-            if (VerticalMovementDirection == 1) // Going Up
+            if (VerticalMoveDir == VerticalMovementDirection.up)
             {
                 transform.position = new Vector3(transform.position.x, jumpHeight + StartY, transform.position.z);
-                VerticalMovementDirection = 0;
+                VerticalMoveDir = VerticalMovementDirection.none;
                 Land();
                 yield break;
             }
 
-            VerticalMovementDirection = 0;
+            VerticalMoveDir = VerticalMovementDirection.none;
             yield break;
+              
         }
-
     }
 }
+

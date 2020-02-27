@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &7325213143714066309
+--- !u!1 &8842148621686856450
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,9 +8,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7325213143714066306}
-  - component: {fileID: 7325213143714066304}
-  - component: {fileID: 7325213143714066307}
+  - component: {fileID: 8842148621686856449}
+  - component: {fileID: 8842148621686856455}
+  - component: {fileID: 8842148621686856448}
   m_Layer: 0
   m_Name: PlayerModel
   m_TagString: Untagged
@@ -18,35 +18,35 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7325213143714066306
+--- !u!4 &8842148621686856449
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7325213143714066309}
+  m_GameObject: {fileID: 8842148621686856450}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 7325213144662126321}
+  m_Father: {fileID: 8842148621881143425}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &7325213143714066304
+--- !u!33 &8842148621686856455
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7325213143714066309}
+  m_GameObject: {fileID: 8842148621686856450}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &7325213143714066307
+--- !u!23 &8842148621686856448
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7325213143714066309}
+  m_GameObject: {fileID: 8842148621686856450}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -78,7 +78,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!1 &7325213144662126325
+--- !u!1 &8842148621800836733
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -86,9 +86,72 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7325213144662126321}
-  - component: {fileID: 7325213144662126334}
-  - component: {fileID: 7325213144662126335}
+  - component: {fileID: 8842148621800836732}
+  - component: {fileID: 8842148621800836706}
+  - component: {fileID: 8842148621800836707}
+  m_Layer: 0
+  m_Name: Tube
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8842148621800836732
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8842148621800836733}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8842148621881143425}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8842148621800836706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8842148621800836733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d2ad866cd2e7014fadc39718e53ad93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8842148621800836707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8842148621800836733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50f9dfc94ba1ee843a01637712b0e181, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tubeRadius: 0.5
+  tubeMaterial: {fileID: 2100000, guid: 1dc4c91c4f22e2c44927ea0ad97db343, type: 2}
+  Controls:
+    StartTubeKey: 307
+    CloseTubeKey: 305
+    ClearAllTubesKey: 127
+--- !u!1 &8842148621881143453
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8842148621881143425}
+  - component: {fileID: 8842148621881143426}
+  - component: {fileID: 8842148621881143427}
+  - component: {fileID: 8842148621881143452}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -96,35 +159,36 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7325213144662126321
+--- !u!4 &8842148621881143425
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7325213144662126325}
+  m_GameObject: {fileID: 8842148621881143453}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 7325213143714066306}
+  - {fileID: 8842148621686856449}
+  - {fileID: 8842148621800836732}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7325213144662126334
+--- !u!114 &8842148621881143426
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7325213144662126325}
+  m_GameObject: {fileID: 8842148621881143453}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cfc87a1afbebb314a9a1dbf186f2c28f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5.21
-  turnSpeed: 3.8
+  speed: 5
+  turnSpeed: 2
   jumpCurve:
     serializedVersion: 2
     m_Curve:
@@ -140,21 +204,21 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0.3
       value: 0.2
-      inSlope: 1.4096466
-      outSlope: 1.4096466
+      inSlope: 1.0833334
+      outSlope: 1.0833334
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.124399
+      outWeight: 0.33333334
     - serializedVersion: 3
       time: 0.7
       value: 0.8
-      inSlope: 1.2080564
-      outSlope: 1.2080564
+      inSlope: 1.0833334
+      outSlope: 1.0833334
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.1346155
+      outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
       value: 1
@@ -167,30 +231,41 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  jumpHeight: 2
+  jumpHeight: 3
   jumpDuration: 1
-  jumpForwardSpeedModifier: 1
+  jumpForwardSpeedModifier: 2
   Controls:
     LeftKey: 276
     RightKey: 275
     ForwardKey: 273
     JumpKey: 32
-    StartTubeKey: 307
-    CloseTubeKey: 305
-    ClearAllTubesKey: 127
---- !u!114 &7325213144662126335
+--- !u!114 &8842148621881143427
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7325213144662126325}
-  m_Enabled: 1
+  m_GameObject: {fileID: 8842148621881143453}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50f9dfc94ba1ee843a01637712b0e181, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tubeRadius: 0.5
+  tubeMaterial: {fileID: 2100000, guid: 1dc4c91c4f22e2c44927ea0ad97db343, type: 2}
+  Controls:
+    StartTubeKey: 307
+    CloseTubeKey: 305
+    ClearAllTubesKey: 127
+--- !u!114 &8842148621881143452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8842148621881143453}
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0d2ad866cd2e7014fadc39718e53ad93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  segmentLength: 10
-  distanceBetweenLoops: 0.1
-  tubeRadius: 0.5
-  material: {fileID: 2100000, guid: 1dc4c91c4f22e2c44927ea0ad97db343, type: 2}
