@@ -12,7 +12,7 @@ Tubular dynamically creates and updates a mesh by adding loops of vertices which
 
 Each tube is segmented with each segment parented under one parent object and the length of each segment can be changed via SegmentLength.
 
-![TubularDiagram2](./Tubular_diagram2.png)
+![TubularDiagram2](./Tubular_diagram2.PNG)
 
 ### Functionality
 
